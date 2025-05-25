@@ -1,0 +1,49 @@
+create schema trab1;
+
+create table trab1.jogos(
+	nome VARCHAR(50) not null,
+	categoria VARCHAR(50) not null,
+	anoLanc INT,
+	numMin INT,
+	numMax INT,
+	CONSTRAINT pk_jogos PRIMARY KEY(nome),
+	CONSTRAINT uk_jogo_nome UNIQUE(nome),
+	CONSTRAINT ck_jogo_numMin CHECK(numMin > 0)
+);
+
+create table trab1.usuario(
+	email VARCHAR(40) not null,
+	nome VARCHAR(50) not null,
+	userName VARCHAR(15) not null,
+	senha VARCHAR(20) not null,
+	dataNasc DATE not null,
+	idade INT,
+	CONSTRAINT pk_user PRIMARY KEY(email),
+	CONSTRAINT uk_user_email UNIQUE(email),
+	CONSTRAINT uk_user_nome UNIQUE(nome),
+	CONSTRAINT uk_user_userName UNIQUE(userName)
+);
+
+create table trab1.avaliacao(
+	notaComplex INT not null,
+	notaRejo INT not null,
+	notaDiver INT not null,
+	qualidadeComp int not null,
+	notaGeral INT,
+	comentario VARCHAR(60),
+	dataAval DATE default CURRENT_DATE,
+	userEmail VARCHAR(40),
+	jogoNome VARCHAR(50),
+	CONSTRAINT pk_avaliacao PRIMARY KEY(userEmail, jogoNome),
+	CONSTRAINT fk_aval_user FOREIGN KEY(userEmail)
+		REFERENCES trab1.usuario(email)
+		ON DELETE CASCADE,
+	CONSTRAINT fk_aval_jogo FOREIGN KEY(jogoNome)
+		REFERENCES trab1.jogos(nome)
+		ON DELETE CASCADE,
+	CONSTRAINT ck_notaComplex CHECK (notaComplex >=0 AND notaComplex <=10),
+	CONSTRAINT ck_notaRejo CHECK (notaRejo >=0 AND notaRejo <=10),
+	CONSTRAINT ck_notaDiver CHECK (notaDiver >=0 AND notaDiver <=10),
+	CONSTRAINT ck_qualidadeComp CHECK (qualidadeComp >=0 AND qualidadeComp <=10),
+	CONSTRAINT ck_notaGeral CHECK (notaGeral >=0 AND notaGeral <=10)
+);
