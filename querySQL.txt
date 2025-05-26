@@ -1,8 +1,7 @@
-create schema trab1;
+create schema trab;
 
-create table trab1.jogos(
+create table trab.jogos(
 	nome VARCHAR(50) not null,
-	categoria VARCHAR(50) not null,
 	anoLanc INT,
 	numMin INT,
 	numMax INT,
@@ -11,7 +10,23 @@ create table trab1.jogos(
 	CONSTRAINT ck_jogo_numMin CHECK(numMin > 0)
 );
 
-create table trab1.usuario(
+create table trab.categoria(
+	identificador SERIAL not null,
+	descricao VARCHAR(50) not null,
+	CONSTRAINT pk_categorias PRIMARY KEY(identificador)
+);
+
+create table trab.catjogo(
+	jogoNome VARCHAR(50) not null,
+	categoriaID SERIAL not null,
+	CONSTRAINT pk_catJogo PRIMARY KEY(jogoNome,categoriaID),
+	CONSTRAINT fk_catJogo_jogo FOREIGN KEY(jogoNome)
+	 REFERENCES trab.jogos(nome) ON DELETE CASCADE,
+	CONSTRAINT fk_catJogo_categoria FOREIGN KEY(categoriaID)
+	 REFERENCES trab.categoria(identificador) ON DELETE CASCADE
+);
+
+create table trab.usuario(
 	email VARCHAR(40) not null,
 	nome VARCHAR(50) not null,
 	userName VARCHAR(15) not null,
@@ -23,7 +38,7 @@ create table trab1.usuario(
 	CONSTRAINT uk_user_userName UNIQUE(userName)
 );
 
-create table trab1.avaliacao(
+create table trab.avaliacao(
 	notaComplex INT not null,
 	notaRejo INT not null,
 	notaDiver INT not null,
@@ -35,10 +50,10 @@ create table trab1.avaliacao(
 	jogoNome VARCHAR(50),
 	CONSTRAINT pk_avaliacao PRIMARY KEY(userEmail, jogoNome),
 	CONSTRAINT fk_aval_user FOREIGN KEY(userEmail)
-		REFERENCES trab1.usuario(email)
+		REFERENCES trab.usuario(email)
 		ON DELETE CASCADE,
 	CONSTRAINT fk_aval_jogo FOREIGN KEY(jogoNome)
-		REFERENCES trab1.jogos(nome)
+		REFERENCES trab.jogos(nome)
 		ON DELETE CASCADE,
 	CONSTRAINT ck_notaComplex CHECK (notaComplex >=0 AND notaComplex <=10),
 	CONSTRAINT ck_notaRejo CHECK (notaRejo >=0 AND notaRejo <=10),
