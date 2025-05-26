@@ -20,7 +20,6 @@ create table trab1.usuario(
 	idade INT,
 	CONSTRAINT pk_user PRIMARY KEY(email),
 	CONSTRAINT uk_user_email UNIQUE(email),
-	CONSTRAINT uk_user_nome UNIQUE(nome),
 	CONSTRAINT uk_user_userName UNIQUE(userName)
 );
 
