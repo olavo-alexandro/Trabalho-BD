@@ -1,0 +1,4 @@
+br\com\avaliacaogames\model\Categoria.class
+br\com\avaliacaogames\dao\CategoriaDAO.class
+br\com\avaliacaogames\controller\CategoriaServlet.class
+br\com\avaliacaogames\util\ConnectionFactory.class
