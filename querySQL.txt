@@ -1,63 +1,62 @@
-create schema trab;
+CREATE SCHEMA trab;
 
-create table trab.jogos(
-	nome VARCHAR(50) not null,
+CREATE TABLE trab.jogos (
+	nome VARCHAR(50) NOT NULL,
 	anoLanc INT,
 	numMin INT,
 	numMax INT,
+	notaMedia DECIMAL(3,1), 
 	CONSTRAINT pk_jogos PRIMARY KEY(nome),
 	CONSTRAINT uk_jogo_nome UNIQUE(nome),
 	CONSTRAINT ck_jogo_numMin CHECK(numMin > 0)
 );
 
-create table trab.categoria(
-	identificador SERIAL not null,
-	descricao VARCHAR(50) not null,
+CREATE TABLE trab.categoria (
+	identificador SERIAL NOT NULL,
+	descricao VARCHAR(50) NOT NULL,
 	CONSTRAINT pk_categorias PRIMARY KEY(identificador)
 );
 
-create table trab.catjogo(
-	jogoNome VARCHAR(50) not null,
-	categoriaID SERIAL not null,
-	CONSTRAINT pk_catJogo PRIMARY KEY(jogoNome,categoriaID),
+CREATE TABLE trab.catjogo (
+	jogoNome VARCHAR(50) NOT NULL,
+	categoriaID INT NOT NULL,
+	CONSTRAINT pk_catJogo PRIMARY KEY(jogoNome, categoriaID),
 	CONSTRAINT fk_catJogo_jogo FOREIGN KEY(jogoNome)
-	 REFERENCES trab.jogos(nome) ON DELETE CASCADE,
+		REFERENCES trab.jogos(nome) ON DELETE CASCADE,
 	CONSTRAINT fk_catJogo_categoria FOREIGN KEY(categoriaID)
-	 REFERENCES trab.categoria(identificador) ON DELETE CASCADE
+		REFERENCES trab.categoria(identificador) ON DELETE CASCADE
 );
 
-create table trab.usuario(
-	email VARCHAR(40) not null,
-	nome VARCHAR(50) not null,
-	userName VARCHAR(15) not null,
-	senha VARCHAR(20) not null,
-	dataNasc DATE not null,
+CREATE TABLE trab.usuario (
+	email VARCHAR(40) NOT NULL,
+	nome VARCHAR(50) NOT NULL,
+	userName VARCHAR(15) NOT NULL,
+	senha VARCHAR(20) NOT NULL,
+	dataNasc DATE NOT NULL,
 	idade INT,
 	CONSTRAINT pk_user PRIMARY KEY(email),
 	CONSTRAINT uk_user_email UNIQUE(email),
 	CONSTRAINT uk_user_userName UNIQUE(userName)
 );
 
-create table trab.avaliacao(
-	notaComplex INT not null,
-	notaRejo INT not null,
-	notaDiver INT not null,
-	qualidadeComp int not null,
-	notaGeral INT,
+CREATE TABLE trab.avaliacao (
+	notaComplex INT NOT NULL,
+	notaRejo INT NOT NULL,
+	notaDiver INT NOT NULL,
+	qualidadeComp INT NOT NULL,
+	notaGeral DECIMAL(3,1), 
 	comentario VARCHAR(60),
-	dataAval DATE default CURRENT_DATE,
+	dataAval DATE DEFAULT CURRENT_DATE,
 	userEmail VARCHAR(40),
 	jogoNome VARCHAR(50),
 	CONSTRAINT pk_avaliacao PRIMARY KEY(userEmail, jogoNome),
 	CONSTRAINT fk_aval_user FOREIGN KEY(userEmail)
-		REFERENCES trab.usuario(email)
-		ON DELETE CASCADE,
+		REFERENCES trab.usuario(email) ON DELETE CASCADE,
 	CONSTRAINT fk_aval_jogo FOREIGN KEY(jogoNome)
-		REFERENCES trab.jogos(nome)
-		ON DELETE CASCADE,
-	CONSTRAINT ck_notaComplex CHECK (notaComplex >=0 AND notaComplex <=10),
-	CONSTRAINT ck_notaRejo CHECK (notaRejo >=0 AND notaRejo <=10),
-	CONSTRAINT ck_notaDiver CHECK (notaDiver >=0 AND notaDiver <=10),
-	CONSTRAINT ck_qualidadeComp CHECK (qualidadeComp >=0 AND qualidadeComp <=10),
-	CONSTRAINT ck_notaGeral CHECK (notaGeral >=0 AND notaGeral <=10)
+		REFERENCES trab.jogos(nome) ON DELETE CASCADE,
+	CONSTRAINT ck_notaComplex CHECK (notaComplex >= 0 AND notaComplex <= 10),
+	CONSTRAINT ck_notaRejo CHECK (notaRejo >= 0 AND notaRejo <= 10),
+	CONSTRAINT ck_notaDiver CHECK (notaDiver >= 0 AND notaDiver <= 10),
+	CONSTRAINT ck_qualidadeComp CHECK (qualidadeComp >= 0 AND qualidadeComp <= 10),
+	CONSTRAINT ck_notaGeral CHECK (notaGeral >= 0 AND notaGeral <= 10)
 );
