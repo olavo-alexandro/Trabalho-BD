@@ -26,7 +26,7 @@ public class Usuario {
         this.nome = nome;
         this.userName = userName;
         this.senha = senha;
-        // Ao usar o construtor, também definimos a data de nascimento e calculamos a idade
+        // Ao usar o construtor, a idade é calculada automaticamente
         this.setDataNasc(dataNasc);
     }
 

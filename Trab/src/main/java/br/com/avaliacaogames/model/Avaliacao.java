@@ -13,7 +13,7 @@ public class Avaliacao {
     private int notaRejo;
     private int notaDiver;
     private int qualidadeComp;
-    private float notaGeral;
+    private float notaGeral; //atributo calculado
     private String comentario;
     private LocalDate dataAval;
 

@@ -13,6 +13,7 @@ public class Jogo {
     private int numMin;
     private int numMax;
     private List<Categoria> categorias; // Para armazenar as categorias do jogo
+    private float notaMedia; //atributo calculado
 
     // Construtor vazio
     public Jogo() {
@@ -66,5 +67,13 @@ public class Jogo {
 
     public void setCategorias(List<Categoria> categorias) {
         this.categorias = categorias;
+    }
+
+    public float getNotaMedia(){
+        return notaMedia;
+    }
+
+    public void setNotaMedia(float notaMedia) {
+        this.notaMedia = notaMedia;
     }
 }

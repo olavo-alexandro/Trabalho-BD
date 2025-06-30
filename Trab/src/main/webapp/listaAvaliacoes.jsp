@@ -29,7 +29,7 @@
 
 <div class="container">
     <div class="home-link">
-        <a href="${pageContext.request.contextPath}/">‹ Voltar para a Home</a>
+        <a href="${pageContext.request.contextPath}/home.jsp">‹ Voltar para a Home</a>
     </div>
 
     <div class="header">

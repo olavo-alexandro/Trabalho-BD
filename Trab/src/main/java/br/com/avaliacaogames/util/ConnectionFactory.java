@@ -25,11 +25,6 @@ public class ConnectionFactory {
     // Senha do banco de dados
     private static final String PASS = "101010";
 
-    /**
-     * Método estático que estabelece e retorna uma conexão com o banco de dados.
-     * @return um objeto do tipo Connection, que é a conexão estabelecida.
-     * @throws RuntimeException se houver um erro ao conectar.
-     */
     public static Connection getConnection() {
         try {
             // Carrega o driver do banco de dados na memória

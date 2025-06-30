@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -31,7 +32,7 @@
 
 <div class="container">
     <div class="home-link">
-        <a href="${pageContext.request.contextPath}/">‹ Voltar para a Home</a>
+        <a href="${pageContext.request.contextPath}/home">‹ Voltar para a Home</a>
     </div>
 
     <div class="header">
@@ -46,6 +47,7 @@
             <th>Ano</th>
             <th>Jogadores</th>
             <th>Categorias</th>
+            <th>Nota Média</th>
             <th>Ações</th>
         </tr>
         </thead>
@@ -61,6 +63,10 @@
                                 <li>${cat.getDescricao()}</li>
                             </c:forEach>
                         </ul>
+                    </td>
+                    <td>
+
+                        <b><fmt:formatNumber value="${j.getNotaMedia()}" minFractionDigits="1" maxFractionDigits="1"/></b>
                     </td>
                     <td class="actions">
                          <a href="jogos?action=edit&nome=${j.getNome()}" class="edit">Editar</a>

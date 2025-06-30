@@ -31,7 +31,6 @@ public class VerificaUsernameServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
 
         // Escreve a resposta JSON que será lida pelo JavaScript na página
-        // Ex: {"disponivel": true} ou {"disponivel": false}
         resp.getWriter().write("{\"disponivel\": " + !emUso + "}");
     }
 }

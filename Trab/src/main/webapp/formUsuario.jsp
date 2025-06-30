@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${usuario != null ? 'Editar Usuário' : 'Novo Usuário'}</title>
+    <title>Editar Perfil</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 20px; background-color: #f8f9fa; color: #343a40; }
         .container { max-width: 800px; margin: auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -15,6 +15,7 @@
         .form-group { display: flex; flex-direction: column; }
         label { font-weight: bold; margin-bottom: 5px; }
         input { padding: 10px; border-radius: 4px; border: 1px solid #ced4da; font-size: 1rem; }
+        input[readonly] { background-color: #e9ecef; }
         .form-full-width { grid-column: 1 / -1; }
         input[type="submit"] { background-color: #4CAF50; color: white; padding: 12px; border: none; cursor: pointer; font-size: 16px; font-weight: bold; transition: background-color 0.2s; }
         input[type="submit"]:hover { background-color: #45a049; }
@@ -25,33 +26,35 @@
         .disponibilidade-msg { font-size: 0.9em; margin-top: 5px; height: 1em; }
         .disponivel { color: #28a745; }
         .indisponivel { color: #dc3545; }
+        .delete-section { margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; }
+        .delete-section a { background-color: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block; }
+        .delete-section a:hover { background-color: #c82333; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="back-link">
-        <a href="${pageContext.request.contextPath}/usuarios">‹ Voltar para a Lista</a>
+        <a href="${pageContext.request.contextPath}/perfil">‹ Voltar para o Perfil</a>
     </div>
 
-    <h1>${usuario != null ? 'Editar Usuário' : 'Novo Usuário'}</h1>
+    <h1>Editar Perfil</h1>
 
     <c:if test="${not empty erro}">
         <div class="error-message">${erro}</div>
     </c:if>
 
     <form action="usuarios" method="POST">
-        <c:if test="${usuario != null}">
-            <input type="hidden" name="emailOriginal" value="<c:out value='${usuario.getEmail()}'/>">
-        </c:if>
+
+        <input type="hidden" name="emailOriginal" value="<c:out value='${usuario.getEmail()}'/>">
 
         <div class="form-group form-full-width">
             <label for="nome">Nome Completo:</label>
             <input type="text" id="nome" name="nome" value="<c:out value='${usuario.getNome()}'/>" required>
         </div>
         <div class="form-group form-full-width">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="<c:out value='${usuario.getEmail()}'/>" ${usuario != null ? 'readonly' : ''} required>
+            <label for="email">Email (não pode ser alterado):</label>
+            <input type="email" id="email" name="email" value="<c:out value='${usuario.getEmail()}'/>" readonly>
         </div>
         <div class="form-group">
             <label for="userName">Username:</label>
@@ -67,22 +70,26 @@
             <input type="date" id="dataNasc" name="dataNasc" value="${usuario.getDataNasc()}" required>
         </div>
         <div class="form-group form-full-width">
-            <input type="submit" id="submit-button" value="${usuario != null ? 'Atualizar Usuário' : 'Salvar Usuário'}">
+            <input type="submit" id="submit-button" value="Atualizar Perfil">
         </div>
     </form>
+
+    <div class="delete-section">
+        <a href="usuarios?action=delete_profile" onclick="return confirm('Tem certeza que deseja excluir seu perfil? Esta ação não pode ser desfeita.')">Excluir Perfil</a>
+    </div>
 </div>
 
 <script>
     const usernameInput = document.getElementById('userName');
     const msgElement = document.getElementById('username-disponibilidade');
     const submitButton = document.getElementById('submit-button');
-    const isEditing = document.querySelector('input[name="emailOriginal"]') !== null;
-    const originalUsername = isEditing ? usernameInput.value : '';
+    const originalUsername = usernameInput.value;
 
     usernameInput.addEventListener('keyup', function() {
         const username = this.value;
 
-        if (isEditing && username === originalUsername) {
+        // Não verifica o próprio username do usuario
+        if (username.toLowerCase() === originalUsername.toLowerCase()) {
             msgElement.textContent = '';
             submitButton.disabled = false;
             return;

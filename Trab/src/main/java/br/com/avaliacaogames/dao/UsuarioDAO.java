@@ -15,8 +15,7 @@ public class UsuarioDAO {
 
     public void save(Usuario usuario) {
         String sql = "INSERT INTO usuario (email, nome, userName, senha, dataNasc, idade) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement pstm = conn.prepareStatement(sql)) {
+        try (Connection conn = ConnectionFactory.getConnection(); PreparedStatement pstm = conn.prepareStatement(sql)) {
             pstm.setString(1, usuario.getEmail());
             pstm.setString(2, usuario.getNome());
             pstm.setString(3, usuario.getUserName());
@@ -36,10 +35,6 @@ public class UsuarioDAO {
         }
     }
 
-    /**
-     * NOVO: Atualiza um utilizador existente no banco de dados.
-     * O email não é atualizável por ser a chave primária.
-     */
     public void update(Usuario usuario) {
         String sql = "UPDATE usuario SET nome = ?, userName = ?, senha = ?, dataNasc = ?, idade = ? WHERE email = ?";
         try (Connection conn = ConnectionFactory.getConnection();
@@ -56,9 +51,6 @@ public class UsuarioDAO {
         }
     }
 
-    /**
-     * NOVO: Exclui um utilizador do banco de dados pelo seu email.
-     */
     public void deleteByEmail(String email) {
         String sql = "DELETE FROM usuario WHERE email = ?";
         try (Connection conn = ConnectionFactory.getConnection();
@@ -70,9 +62,6 @@ public class UsuarioDAO {
         }
     }
 
-    /**
-     * NOVO: Busca um único utilizador pelo seu email.
-     */
     public Usuario findByEmail(String email) {
         String sql = "SELECT * FROM usuario WHERE email = ?";
         Usuario usuario = null;
@@ -95,11 +84,36 @@ public class UsuarioDAO {
         return usuario;
     }
 
-    public boolean usernameExists(String username) {
-        String sql = "SELECT COUNT(1) FROM usuario WHERE userName = ?";
+    //verifica se email e senha são correspondentes
+    public Usuario findByEmailAndPassword(String email, String senha) {
+        String sql = "SELECT * FROM usuario WHERE email = ? AND senha = ?";
+        Usuario usuario = null;
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement pstm = conn.prepareStatement(sql)) {
-            pstm.setString(1, username);
+            pstm.setString(1, email);
+            pstm.setString(2, senha);
+            try (ResultSet rset = pstm.executeQuery()) {
+                if (rset.next()) {
+                    usuario = new Usuario();
+                    usuario.setEmail(rset.getString("email"));
+                    usuario.setNome(rset.getString("nome"));
+                    usuario.setUserName(rset.getString("userName"));
+                    usuario.setSenha(rset.getString("senha"));
+                    usuario.setDataNasc(rset.getDate("dataNasc").toLocalDate());
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return usuario;
+    }
+
+    //verifica se o userName já está em uso
+    public boolean usernameExists(String username) {
+        String sql = "SELECT COUNT(1) FROM usuario WHERE lower(userName) = lower(?)";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement pstm = conn.prepareStatement(sql)) {
+            pstm.setString(1, username.trim());
             try (ResultSet rset = pstm.executeQuery()) {
                 if (rset.next()) {
                     return rset.getInt(1) > 0;

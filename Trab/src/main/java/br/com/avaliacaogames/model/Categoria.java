@@ -19,7 +19,7 @@ public class Categoria {
         this.descricao = descricao;
     }
 
-    // Getters e Setters para todos os atributos
+    // Getters e Setters
 
     public int getIdentificador() {
         return identificador;

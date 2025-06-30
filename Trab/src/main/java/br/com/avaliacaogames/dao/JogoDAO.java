@@ -123,7 +123,7 @@ public class JogoDAO {
     }
 
     public Jogo findByName(String nome) {
-        String sql = "SELECT j.nome, j.anoLanc, j.numMin, j.numMax, c.identificador, c.descricao " +
+        String sql = "SELECT j.nome, j.anoLanc, j.numMin, j.numMax, j.notamedia, c.identificador, c.descricao " +
                 "FROM jogos j " +
                 "LEFT JOIN catjogo cj ON j.nome = cj.jogoNome " +
                 "LEFT JOIN categoria c ON cj.categoriaID = c.identificador " +
@@ -140,6 +140,7 @@ public class JogoDAO {
                         jogo.setAnoLanc(rset.getInt("anoLanc"));
                         jogo.setNumMin(rset.getInt("numMin"));
                         jogo.setNumMax(rset.getInt("numMax"));
+                        jogo.setNotaMedia(rset.getFloat("notamedia"));
                         jogo.setCategorias(new ArrayList<>());
                     }
                     int idCategoria = rset.getInt("identificador");
@@ -156,7 +157,7 @@ public class JogoDAO {
     }
 
     public List<Jogo> findAll() {
-        String sql = "SELECT j.nome, j.anoLanc, j.numMin, j.numMax, c.identificador, c.descricao " +
+        String sql = "SELECT j.nome, j.anoLanc, j.numMin, j.numMax, j.notamedia, c.identificador, c.descricao " +
                 "FROM jogos j " +
                 "LEFT JOIN catjogo cj ON j.nome = cj.jogoNome " +
                 "LEFT JOIN categoria c ON cj.categoriaID = c.identificador " +
@@ -177,6 +178,7 @@ public class JogoDAO {
                     jogo.setAnoLanc(rset.getInt("anoLanc"));
                     jogo.setNumMin(rset.getInt("numMin"));
                     jogo.setNumMax(rset.getInt("numMax"));
+                    jogo.setNotaMedia(rset.getFloat("notamedia"));
                     jogo.setCategorias(new ArrayList<>());
                     jogosMap.put(nomeJogo, jogo);
                 }
@@ -191,5 +193,49 @@ public class JogoDAO {
             e.printStackTrace();
         }
         return new ArrayList<>(jogosMap.values());
+    }
+
+    public List<Jogo> findForRanking() {
+        String sql = "SELECT nome, notamedia FROM jogos ORDER BY notamedia DESC NULLS LAST, nome ASC";
+
+        List<Jogo> ranking = new ArrayList<>();
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement pstm = conn.prepareStatement(sql);
+             ResultSet rset = pstm.executeQuery()) {
+
+            while (rset.next()) {
+                Jogo jogo = new Jogo();
+                jogo.setNome(rset.getString("nome"));
+                jogo.setNotaMedia(rset.getFloat("notamedia"));
+                ranking.add(jogo);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ranking;
+    }
+
+    public void updateNotaMedia(String nomeJogo) {
+        String sqlCalc = "SELECT AVG(notaGeral) AS media FROM avaliacao WHERE jogoNome = ?";
+        String sqlUpdate = "UPDATE jogos SET notamedia = ? WHERE nome = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            float media = 0;
+            try (PreparedStatement pstmCalc = conn.prepareStatement(sqlCalc)) {
+                pstmCalc.setString(1, nomeJogo);
+                try (ResultSet rs = pstmCalc.executeQuery()) {
+                    if (rs.next()) {
+                        media = rs.getFloat("media");
+                    }
+                }
+            }
+            try (PreparedStatement pstmUpdate = conn.prepareStatement(sqlUpdate)) {
+                pstmUpdate.setFloat(1, media);
+                pstmUpdate.setString(2, nomeJogo);
+                pstmUpdate.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
