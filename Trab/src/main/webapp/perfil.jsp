@@ -44,6 +44,7 @@
             <nav>
                 <a href="${pageContext.request.contextPath}/home">Página Inicial</a>
                 <a href="${pageContext.request.contextPath}/perfil">Ver Perfil</a>
+                <a href="${pageContext.request.contextPath}/relatorios">Relatórios</a>
             </nav>
             <div class="logout-link">
                 <a href="${pageContext.request.contextPath}/logout">Sair</a>
