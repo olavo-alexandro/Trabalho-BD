@@ -19,6 +19,7 @@
         .logout-link a { color: #E74C3C; text-decoration: none; font-weight: bold; }
         .main-content { margin-left: 270px; padding: 20px; }
         h1 { color: #333; }
+        h2 { margin-top: 30px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         th, td { border-bottom: 1px solid #dee2e6; padding: 15px; text-align: left; }
         th { background-color: #e9ecef; }
